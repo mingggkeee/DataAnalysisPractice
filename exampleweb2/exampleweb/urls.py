@@ -17,10 +17,10 @@ from django.contrib import admin
 from django.http.response import HttpResponse
 from django.urls import path, include
 
-from polls import views
+from exampleweb import views
 
 urlpatterns = [
-    path('', lambda request: HttpResponse("<h1>This is Quickstart Home</h1>"), name='home'),
+    path('', views.home, name='home'),
     path('admin/', admin.site.urls),
 
     # path('polls/', views.index) # 직접 요청과 함수를 연결

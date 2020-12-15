@@ -1,4 +1,6 @@
+{% extends "polls_base.html" %}
 
+{% block content %}
 <h1>{{ question.question_text }}</h1>
 
 <!-- <form action="/polls/{{question.id}}/vote/" method="POST"> -->
@@ -12,3 +14,4 @@
 
 </form>
 <!-- form 안에 감싸져 있는 데이터는 서버로 전송 -->
+{% endblock %}

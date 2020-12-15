@@ -3,6 +3,8 @@ from django.http.response import HttpResponse
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+from django.views.generic import ListView, DetailView
+
 from polls.repository import PollsRepository
 from polls.models import Question, Choice
 # Create your views here.
@@ -12,11 +14,14 @@ def index(request):
     # repository = PollsRepository()
     # question_list = repository.select_questions()
     question_list = Question.objects.all()
-
     # print(question_list)
     context = { 'question_list' : question_list}
-
     return render(request, "polls/index.html", context)  # context는 index.html을 처리할 때 사용할 수 있도록 전달하는 데이터
+
+class IndexView(ListView):
+    model = Question # Question에서 목록을 조회하시오
+    context_object_name = 'question_list' # 템플릿으로 전달할 데이터 이름
+    template_name = 'polls/index.html' # 이동해야할 템플릿 지정
 
 def detail(request, question_id):
 
@@ -28,11 +33,15 @@ def detail(request, question_id):
     # question.choices = choice_list
 
     # question = Question.objects.get(id=question_id) # 데이터만 조회하는 코드
-
     question = get_object_or_404(Question, pk=question_id) # 데이터 조회 + 없으면 404 오류
 
     # 2. 템플릿으로 이동 (데이터도 함께 전달)
     return render(request, "polls/detail.html", { 'question' : question })
+
+class QuestionDetailView(DetailView):
+    model = Question
+    context_object_name = 'question'
+    template_name = 'polls/detail.html'
 
 def vote(request, question_id):
     # 테스트용 코드
@@ -61,6 +70,12 @@ def results(request, question_id):
 
     # 2. 템플릿으로 이동 (데이터도 함께 전달)
     return render(request, "polls/results.html", { 'question' : question })
+
+class VoteResultView(DetailView):
+    model = Question
+    context_object_name = 'question'
+    template_name = 'polls/results.html'
+
 
    
 
