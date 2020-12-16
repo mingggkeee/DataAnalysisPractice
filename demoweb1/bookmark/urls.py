@@ -7,6 +7,6 @@ app_name = 'bookmark'
 urlpatterns =[
 
     path('', BookmarkLV.as_view(), name='index'),
-    path('<int:id>/', BookmarkDV.as_view(), name='detail'),
+    path('<int:pk>/', BookmarkDV.as_view(), name='detail'),
 
 ]
