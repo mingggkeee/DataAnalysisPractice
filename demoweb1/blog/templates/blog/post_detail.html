@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Post Detail{% endblock %}
+
+{% block content %}
+
+    <h2>{{ object.title }}</h2>
+
+    <p>
+        {% if object.get_next %}
+        [다음 글]<a href='{{object.get_next.get_absolute_url}}'>{{ object.get_next }}</a>
+        {% endif %}
+        &nbsp; |&nbsp;
+        {% if object.get_previous %}
+        [이전 글]<a href='{{object.get_previous.get_absolute_url}}'>{{ object.get_next }}</a>
+        {% endif %}
+    </p>
+
+    <div>
+        {{ object.modify_dt }}
+    </div>
+    <div>
+        {{ object.content }}
+    </div>
+
+{% endblock %}
