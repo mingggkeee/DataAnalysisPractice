@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # open source apps
+    'widget_tweaks',
 
     # custom apps
     'bookmark.apps.BookmarkConfig',
