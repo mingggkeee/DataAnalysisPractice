@@ -13,7 +13,7 @@ class PostLV(ListView):
     paginate_by = 2 # 페이징 처리 설정 (한 화면에 n개씩 표시)
 
 class PostDV(DetailView):
-    model = Post
+    model = Post    
     # template_name = 'blog/post_detail.html'   # 명시적으로 지정하지 않을 경우
     # content_object_name = 'object'            # 명시적으로 지정하지 않을 경우
 
