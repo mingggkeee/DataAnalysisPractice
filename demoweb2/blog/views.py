@@ -1,6 +1,13 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, ArchiveIndexView, YearArchiveView, DayArchiveView, MonthArchiveView, DayArchiveView, TodayArchiveView
 
+from django.views.generic import CreateView, DeleteView, UpdateView
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+
+from demoweb.views import OwnerOnlyMixin
+
 from blog.models import Post
 # Create your views here.
 
@@ -40,3 +47,31 @@ class PostTAV(TodayArchiveView):
     model = Post
     date_field = 'modify_dt'
     month_format='%m'
+
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    # fields = ['title', 'slug', 'description', 'content', 'tags']
+    fields = ['title', 'slug', 'description', 'content']
+    initial = {'slug': 'auto-filling-do-not-input'} 
+    #fields = ['title', 'description', 'content', 'tags'] 
+    success_url = reverse_lazy('blog:index')
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+class PostChangeLV(LoginRequiredMixin, ListView):
+    template_name = 'blog/post_change_list.html'
+
+    def get_queryset(self):
+        return Post.objects.filter(owner=self.request.user)
+
+class PostUpdateView(OwnerOnlyMixin, UpdateView):
+    model = Post
+    # fields = ['title', 'slug', 'description', 'content', 'tags']
+    fields = ['title', 'slug', 'description', 'content']
+    success_url = reverse_lazy('blog:index')
+
+class PostDeleteView(OwnerOnlyMixin, DeleteView) :
+    model = Post
+    success_url = reverse_lazy('blog:index')

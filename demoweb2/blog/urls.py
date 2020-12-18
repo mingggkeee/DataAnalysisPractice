@@ -1,6 +1,7 @@
 from django.urls import path, re_path
 
 from blog.views import PostLV, PostDV, PostAV, PostYAV, PostMAV, PostDAV, PostTAV
+from blog.views import PostCreateView, PostChangeLV, PostUpdateView, PostDeleteView
 
 app_name = 'blog'
 
@@ -26,4 +27,15 @@ urlpatterns =[
 
     # 5. Example: /blog/archive/today/
     path('archive/today/', PostTAV.as_view(), name='post_today_archive'),
+
+    # Example: /blog/add/
+    path('add/', PostCreateView.as_view(), name="add",),
+
+    # Example: /blog/change/
+    path('change/', PostChangeLV.as_view(), name="change",),
+
+    # Example: /blog/99/update/
+    path('<int:pk>/update/', PostUpdateView.as_view(), name="update",),
+    # Example: /blog/99/delete/
+    path('<int:pk>/delete/', PostDeleteView.as_view(), name="delete",),
 ]
