@@ -2,16 +2,20 @@ from django.db import models
 
 from django.urls import reverse
 
+from django.contrib.auth.models import User
+
+from django.utils.text import slugify
 # Create your models here.
 
 class Post(models.Model):
 
     title = models.CharField(verbose_name = "TITLE", max_length=100)
-    slug = models.SlugField(verbose_name='SLUG', max_length=100, allow_unicode=True, help_text='one word for title alias. ')
+    slug = models.SlugField(verbose_name='SLUG', max_length=100, allow_unicode=True, help_text='one word for title alias. ')    # this is title -> this-is-title
     description = models.CharField(verbose_name="DESCRIPTION", max_length=100)
     content = models.TextField(verbose_name='CONTENT')
     create_dt = models.DateTimeField(verbose_name='CREATE DATE', auto_now_add=True)
     modify_dt = models.DateTimeField(verbose_name='MODIFY DATE', auto_now=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, verbose_name="OWNER")
 
     # ORM 객체 (테이블) 관리와 관련된 부가 정보 등록
     class Meta:
@@ -33,4 +37,7 @@ class Post(models.Model):
     def get_next(self): # 다음 글 가져오기
         return self.get_next_by_modify_dt()
     
-
+    def save(self, *args, **kwargs):
+	    self.slug = slugify(self.title, allow_unicode=True)
+	    super().save(*args, **kwargs)
+	
