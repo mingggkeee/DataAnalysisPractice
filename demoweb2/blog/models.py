@@ -1,6 +1,7 @@
 from django.db import models
 
 from django.urls import reverse
+from taggit.managers import TaggableManager
 
 from django.contrib.auth.models import User
 
@@ -16,6 +17,7 @@ class Post(models.Model):
     create_dt = models.DateTimeField(verbose_name='CREATE DATE', auto_now_add=True)
     modify_dt = models.DateTimeField(verbose_name='MODIFY DATE', auto_now=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, verbose_name="OWNER")
+    tags = TaggableManager(blank=True)
 
     # ORM 객체 (테이블) 관리와 관련된 부가 정보 등록
     class Meta:

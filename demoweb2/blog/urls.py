@@ -2,6 +2,7 @@ from django.urls import path, re_path
 
 from blog.views import PostLV, PostDV, PostAV, PostYAV, PostMAV, PostDAV, PostTAV
 from blog.views import PostCreateView, PostChangeLV, PostUpdateView, PostDeleteView
+from blog.views import TagCloudTV, TaggedObjectLV, SearchFormView
 
 app_name = 'blog'
 
@@ -36,6 +37,16 @@ urlpatterns =[
 
     # Example: /blog/99/update/
     path('<int:pk>/update/', PostUpdateView.as_view(), name="update",),
+
     # Example: /blog/99/delete/
     path('<int:pk>/delete/', PostDeleteView.as_view(), name="delete",),
+
+    # Example : /blog/tag
+    path('tag/', TagCloudTV.as_view(), name='tag_cloud'),
+
+    # Example: /blog/tag/tagname/
+    path('tag/<str:tag>/', TaggedObjectLV.as_view(), name='tagged_object_list'),
+
+    # Example: /blog/search/
+    path('search/', SearchFormView.as_view(), name='search')
 ]

@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     # custom apps
     'bookmark.apps.BookmarkConfig',
     'blog.apps.BlogConfig',
+    'taggit.apps.TaggitAppConfig',
+    'taggit_templatetags2',
 ]
 
 MIDDLEWARE = [
@@ -133,3 +135,6 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 
 LOGIN_REDIRECT_URL = '/' # 로그인 성공했을 때 이동할 경로 -> default : /accounts/profile/
+
+TAGGIT_CASE_INSENSIVE = True
+TAGGIT_LIMIT = 50
