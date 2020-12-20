@@ -16,7 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http.response import HttpResponse
-
+from django.conf.urls.static import static
+from django.conf import settings
 from demoweb.views import HomeView, UserCreateView, UserCreateDoneView
 
 urlpatterns = [
@@ -30,4 +31,5 @@ urlpatterns = [
     # path('bookmark/', None, name="bookmark-index")
     path('bookmark/', include('bookmark.urls')),    # bookmark로 시작되는 url 설정 관리는 bookmark/urls.py 에서 처리합니다.
     path('blog/', include('blog.urls')),            # blog로 시작되는 url 설정 관리는 blog/urls.py 에서 처리합니다.
-]
+    path('photo/', include('photo.urls')),
+] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
