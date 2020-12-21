@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+<title>Stocks Home</title>
+{% endblock page_title %}
+
+{% block main_content %}
+
+                        <div class="row m-t-25">
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="overview-item overview-item--c1">
+                                    <div class="overview__inner">
+                                        <div class="overview-box clearfix">
+                                            <div class="icon">
+                                                <i class="zmdi zmdi-money"></i>
+                                            </div>
+                                            <div class="text">
+                                                <h3 id='kospi'></h3>
+                                                <span>KOSPI</span>
+                                            </div>
+                                        </div>
+                                        <div class="overview-chart">
+                                            <canvas id="kospi-chart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="overview-item overview-item--c2">
+                                    <div class="overview__inner">
+                                        <div class="overview-box clearfix">
+                                            <div class="icon">
+                                                <i class="zmdi zmdi-money"></i>
+                                            </div>
+                                            <div class="text">
+                                                <h3 id="kosdaq"></h3>
+                                                <span>KOSDAQ</span>
+                                            </div>
+                                        </div>
+                                        <div class="overview-chart">
+                                            <canvas id="kosdaq-chart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="overview-item overview-item--c3">
+                                    <div class="overview__inner">
+                                        <div class="overview-box clearfix">
+                                            <div class="icon">
+                                                <i class="zmdi zmdi-money"></i>
+                                            </div>
+                                            <div class="text">
+                                                <h3 id="dowjones"></h3>
+                                                <span>DOWJONES</span>
+                                            </div>
+                                        </div>
+                                        <div class="overview-chart">
+                                            <canvas id="dowjones-chart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="overview-item overview-item--c4">
+                                    <div class="overview__inner">
+                                        <div class="overview-box clearfix">
+                                            <div class="icon">
+                                                <i class="zmdi zmdi-money"></i>
+                                            </div>
+                                            <div class="text">
+                                                <h3 id="nasdaq"></h3>
+                                                <span>NASDAQ</span>
+                                            </div>
+                                        </div>
+                                        <div class="overview-chart">
+                                            <canvas id="nasdaq-chart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script type='text/javascript'>
+    $(function() { // jQuery의 시작점 (브라우저가 html을 모두 읽었을 때)
+
+        // alert('hello jQuery')
+
+        // 1. 동기 방식 요청
+        // location.href = '/stocks/market/'; // location.href : 브라우저의 주소 입력창에 주소 입력 후 엔터 (동기 방식 요청)
+
+        // 2. 비동기 방식 요청 + partial refresh
+        $.ajax({    // jQuery의 ajax 요청 함수 )
+            'url': '/stocks/market',
+            'method': 'GET',
+            'success': function(data, status, xhr) {    // 'success' -> ajax 요청이 성공적으로 응답을 수신했을 때 호출되는 함수
+                alert(data);
+            },
+            'error': function(xhr, status, err){    // 'error' -> ajax 요청에 오류가 있을 때 호출되는 함수
+                alert(err);
+            },
+        });
+    });
+</script>
+{% endblock %}
