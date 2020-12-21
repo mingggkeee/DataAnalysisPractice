@@ -24,7 +24,7 @@
     {% endif %}
 
     {% if form.is_multipart or formset.is_multipart %}
-    <form enctype="multipart/form-data" action="" method="post">
+    <form enctype="multipart/form-data" action="" method="post"></form>
     {% else %}
     <form action="." method="post">
     {% endif %}
@@ -33,14 +33,14 @@
 
         <fieldset class ="card pt-3">
             <div class="form-group row">
-                {{ form.name|add_label_class:"col-form-label col-sm-2 ml-3 font-weight-bold" }}
+                {{ form.name|add_label_class:"col-form-label col-sm-3 ml-3 font-weight-bold" }}
                 <div class="col-sm-5">
                     {{ form.name|add_class:"form-control"|attr:"autofocus" }}
                 </div>
             </div>
 
             <div class="form-group row">
-                {{ form.description|add_label_class:"col-form-label col-sm-2 ml-3 font-weight-bold" }}
+                {{ form.description|add_label_class:"col-form-label col-sm-3 ml-3 font-weight-bold" }}
                 <div class="col-sm-5">
                     {{ form.description|add_class:"form-control" }}
                 </div>
