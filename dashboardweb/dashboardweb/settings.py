@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     
     # custom-apps
     'stocks.apps.StocksConfig',
+    'covid19.apps.Covid19Config',
 ]
 
 MIDDLEWARE = [

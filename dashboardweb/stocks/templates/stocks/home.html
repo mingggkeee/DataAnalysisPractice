@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block page_title %}
-<title>Stocks Home</title>
+<titlt>Stocks Home</titlt>
 {% endblock page_title %}
 
 {% block main_content %}
@@ -87,7 +87,7 @@
                                     
                                     <div class="card-body">
                                         <form class="form-header" action="" method="POST">
-                                            <input class="au-input au-input--xl" type="text" id="company_name" placeholder="Input Company Name..." />
+                                            <input class="au-input" type="text" id="company_name" placeholder="Input Company Name..." />                                        
                                             <button class="au-btn--submit" type="button" id="btn_search">
                                                 <i class="zmdi zmdi-search"></i>
                                             </button>
@@ -133,127 +133,309 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="au-card m-b-30">
+                                    <div class="au-card-inner">
+                                        <h3 class="title-2 m-b-40">Line Chart By Day</h3>
+                                        <canvas id="stock_line_chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="au-card m-b-30">
+                                    <div class="au-card-inner">
+                                        <h3 class="title-2 m-b-40">Bar chart By Day</h3>
+                                        <canvas id="stock_bar_chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 {% endblock main_content %}
 
 {% block custom_js %}
-<script type='text/javascript'>
-    $(function() { // jQuery의 시작점 (브라우저가 html을 모두 읽었을 때)
 
-        // alert('hello jQuery')
+<script type="text/javascript">
+$(function() { // jQuery의 시작점 (브라우저가 html을 모두 읽었을 때)
 
-        // 1. 동기 방식 요청
-        // location.href = '/stocks/market/'; // location.href : 브라우저의 주소 입력창에 주소 입력 후 엔터 (동기 방식 요청)
+    //alert('hello jQuery');
 
-        // 2. 비동기 방식 요청 + partial refresh
-        // $.ajax({    // jQuery의 ajax 요청 함수 )
-        //     'url': '/stocks/market',
-        //     'method': 'GET',
-        //     'success': function(data, status, xhr) {    // 'success' -> ajax 요청이 성공적으로 응답을 수신했을 때 호출되는 함수
-        //         // alert(data);
-        //         values = data.split(',')
-        //         $('#kospi').text(values[0]);
-        //         $('#kosdaq').text(values[1]);
-        //         $('#dowjones').text(values[2]);
-        //         $('#nasdaq').text(values[3]);
-        //     },
-        //     'error': function(xhr, status, err){    // 'error' -> ajax 요청에 오류가 있을 때 호출되는 함수
-        //         alert(err);
-        //     },
-        // });
-        
-        // 검색 버튼 클릭처리
-        list_td_names = ['symbol', 'market', 'name'];
-        list_tr_html_str = `<tr>
+    //1. 동기 방식 요청 + All refresh
+    // location.href = '/stocks/market/'; // location.href -> 브라우저의 주소 입력창에 주소 입력 후 엔터
+    
+    //2. 비동기 방식 요청 + Partial refresh
+    $.ajax({   // jQuery의 ajax 요청 함수
+        "url": '/stocks/market',
+        "method": 'GET',
+        "success": function(data, status, xhr) { // "success" -> ajax 요청이 성공적으로 응답을 수신했을 때 호출되는 함수
+            // alert(data);
+            //$('#kospi').text(data);
+            values = data.split(',')
+            $('#kospi').text(values[0]);
+            $('#kosdaq').text(values[1]);
+            $('#dowjones').text(values[2]);
+            $('#nasdaq').text(values[3]);
+        },
+        "error": function(xhr, status, err) {  // "error" -> ajax 요청에 오류가 있을 때 호출되는 함수
+            alert(err);
+        }
+    });
+    
+    // 검색 버튼 클릭 처리
+    list_td_names = ['symbol', 'market', 'name'];
+    list_tr_html_str = `<tr>
                         <td></td>
                         <td></td>
                         <td></td>
                     </tr>`;
-        $('#btn_search').on('click', function(event){
-            key = $('#company_name').val();
-            $.ajax({
-                'url': "/stocks/search/" + key,
-                'method': 'GET',
-                'success': function(data, status, xhr){
 
-                    $('#stocks_table tbody').empty()   // 기존의 TR 태그 제거
-                    // alert(data);
-                    // eval("a=10"); // eval(문자열) -> 문자열을 코드로 변경 : "a = 10" -> a=10;
-                    // alert(a);
+    $('#btn_search').on('click', function(event) {
+        var key = $('#company_name').val();
+        // alert(key);
+        $.ajax({
+            "url": "/stocks/search/" + key,
+            "method": "GET",
+            "success": function(data, status, xhr) {
+                
+                $('#stocks_table tbody').empty() // 기존의 TR 태그 제거
+                // alert(data);
+                // eval("a = 10"); // eval(문자열) -> 문자열을 코드로 변경 : "a = 10" -> a = 10;
+                // alert(a);
 
-                    eval("data = " + data);
-                    // alert(data[0]['pk']);
-                    for (var idx = 0; idx < data.length; idx++) { 
-                        var tr = $(list_tr_html_str);   // 테이블 행 만들기
-                        tr.attr('data-symbol', data[idx].pk)    // 테이블 행에 데이터 저장
-                        var tds = tr.find('td');    // tr 하위의 td 목록 찾기
-                        tds.each(function(i, td) {  // python enumerate
-                            if (i == 0) {
-                                $(td).text(data[idx].pk)
-                            } else {
-                                $(td).text(data[idx].fields[list_td_names[i]])
-                            }
-                        });
-                        $('#stocks_table tbody').append(tr);    // 위에서 만든 행을 테이블에 추가
-
-                    }
-                },
-                'error': function(xhr, status, err){
-                    alert(err);
-                },
-            })
-        });
-
-        // 검색된 목록 테이블에서 행을 클릭하면 클릭된 항목을 상세보기
-
-        detail_td_names = ['symbol', 'market', 'name', 'sector', 'industry', 'listing_date', 'settle_month', 'representative', 'homepage', 'region'];
-        detail_tr_html_str = `<tr>
-                                <td></td>
-                                <td></td>
-                             </tr>`
-
-        $('#stocks_table').on('click', 'tr', function(event) {  // id가 stocks_table인 테이블의 tr 태그에 이벤트 연결
-            event.preventDefault();
-            event.stopPropagation();
-
-            var symbol = $(this).attr('data-symbol');
-            // alert(symbol);
-
-            $.ajax({
-                "url": "/stocks/" + symbol,
-                "method": "GET",
-                "success": function(data, status, xhr) {
-                    // alert(data);
-                    $('#company_card_title').text(data[0].name);
-                    $('#stock_detail_table').empty();
-                    for (var idx = 0; idx < detail_td_names.length; idx++) {
-                        var tr = $(detail_tr_html_str);
-                        tds = tr.find('td');
-                        $(tds[0]).text(detail_td_names[idx]);
-                        if (detail_td_names[idx] === 'homepage') {
-                            link = $('<a>' + data[0][detail_td_names[idx]] +'</a>');
-                            link.attr('href', data[0][detail_td_names[idx]])
-                            $(tds[1]).append(link);
+                eval("data = " + data);
+                //alert(data[0]['pk']);
+                for (var idx = 0; idx < data.length; idx++) { 
+                    var tr = $(list_tr_html_str);   // 테이블 행 만들기
+                    tr.attr('data-symbol', data[idx].pk) // 테이블 행에 데이터 저장
+                    var tds = tr.find('td'); // tr 하위의 td 목록 찾기
+                    tds.each(function(i, td) { // python enumerate
+                        if (i == 0) {
+                            $(td).text(data[idx].pk)
                         } else {
-                            $(tds[1]).text(data[0][detail_td_names[idx]]);
+                            $(td).text(data[idx].fields[list_td_names[i]])
                         }
-                        $('#stock_detail_table').append(tr);
+                    });
+                    $('#stocks_table tbody').append(tr); // 위에서 만든 행을 테이블에 추가
 
-                        var labels = []
-                        var close_list = []
-                        var amount_list = []
-                        for (var i = 0; i < data[0].stats.length; i++) {
-                            labels.push(data[0].stats[i][0]);
-                            close_list.push(data[0].stats[i][4] * 100);
-                            amount_list.push(data[0].stats[i][5])
-                        }
-                    }
-                    
-                },
-                "error": function(xhr, status, err) {
-                    alert(err);
                 }
-            })
+
+            }, 
+            "error": function(xhr, status, err) {
+                alert(err);
+            }
         });
     });
+
+    // 검색된 목록 테이블에서 행을 클릭하면 클릭된 항목을 상세보기 처리
+    detail_td_names = ['symbol', 'market', 'name', 'sector', 'industry', 'listing_date', 'settle_month', 'representative', 'homepage', 'region'];
+    detail_tr_html_str = `<tr>
+                            <td></td>
+                            <td></td>
+                          </tr>`
+
+    $('#stocks_table').on('click', 'tr', function(event) { // id가 stocks_table인 테이블의 tr 태그에 이벤트 연결
+        
+        event.preventDefault();
+        event.stopPropagation();
+
+        var symbol = $(this).attr('data-symbol');
+        // alert(symbol);
+
+        $.ajax({
+            "url": "/stocks/" + symbol,
+            "method": "GET",
+            "success": function(data, status, xhr) {
+                // alert(data);
+                $('#company_card_title').text(data[0].name);
+                $('#stock_detail_table').empty();
+                
+                for (var idx = 0; idx < detail_td_names.length; idx++) {
+                    var tr = $(detail_tr_html_str);
+                    tds = tr.find('td');
+                    $(tds[0]).text(detail_td_names[idx]);
+                    if (detail_td_names[idx] === 'homepage') {
+                        link = $('<a>' + data[0][detail_td_names[idx]] +'</a>');
+                        link.attr('href', data[0][detail_td_names[idx]])
+                        $(tds[1]).append(link);
+                    } else {
+                        $(tds[1]).text(data[0][detail_td_names[idx]]);
+                    }
+                    $('#stock_detail_table').append(tr);
+
+                    show_chart(data);
+                }
+                
+            },
+            "error": function(xhr, status, err) {
+                alert(err);
+            }
+        })
+    });
+
+    function show_chart(data) {
+        var labels = []
+        var close_list = []
+        var amount_list = []
+        for (var i = 0; i < data[0].stats.length; i++) {
+            labels.push(data[0].stats[i][0]);   // 날짜 목록
+            close_list.push(data[0].stats[i][1]); // 종가 데이터 목록
+            amount_list.push(data[0].stats[i][5]);      // 거래량 데이터 목록
+        }
+
+        show_stock_line_chart(labels, [close_list]);
+        show_stock_bar_chart(labels, [amount_list]);
+    }
+
+    var line_chart = null;
+    function show_stock_line_chart(labels, datasets) {
+        //line chart
+        var ctx = $('#stock_line_chart'); // 그래프가 표시될 HTML 요소
+        if (ctx) {
+            ctx.height = 150;
+
+            if (line_chart) {
+                line_chart.destroy();
+            }
+            
+            line_chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                labels: labels, // x축 데이터
+                type: 'line',
+                defaultFontFamily: 'Poppins',
+                datasets: [{
+                    label: "Close By Day",
+                    data: datasets[0], // y축 데이터
+                    backgroundColor: 'transparent',
+                    borderColor: 'rgba(220,53,69,0.75)',
+                    borderWidth: 3,
+                    pointStyle: 'circle',
+                    pointRadius: 5,
+                    pointBorderColor: 'transparent',
+                    pointBackgroundColor: 'rgba(220,53,69,0.75)',
+                }]
+                },
+                options: {
+                responsive: true,
+                tooltips: {
+                    mode: 'index',
+                    titleFontSize: 12,
+                    titleFontColor: '#000',
+                    bodyFontColor: '#000',
+                    backgroundColor: '#fff',
+                    titleFontFamily: 'Poppins',
+                    bodyFontFamily: 'Poppins',
+                    cornerRadius: 3,
+                    intersect: false,
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                    usePointStyle: true,
+                    fontFamily: 'Poppins',
+                    },
+                },
+                scales: {
+                    xAxes: [{
+                    display: true,
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    scaleLabel: {
+                        display: false,
+                        labelString: 'Month'
+                    },
+                    ticks: {
+                        fontFamily: "Poppins"
+                    }
+                    }],
+                    yAxes: [{
+                    display: true,
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Value',
+                        fontFamily: "Poppins"
+
+                    },
+                    ticks: {
+                        fontFamily: "Poppins",
+                        min: 0,
+                    }
+                    }]
+                },
+                title: {
+                    display: false,
+                    text: 'Normal Legend'
+                }
+                }
+            });
+        }
+
+    }
+    
+    var bar_chart = null;
+    function show_stock_bar_chart(labels, datasets) {
+        //bar chart
+        var ctx = $('#stock_bar_chart');
+        if (ctx) {
+            ctx.height = 200;
+
+            if (bar_chart) {
+                bar_chart.destroy();
+            }
+
+            bar_chart = new Chart(ctx, {
+                type: 'bar',
+                defaultFontFamily: 'Poppins',
+                data: {
+                labels: labels, // x축 데이터
+                datasets: [
+                    {
+                    label: "Amount By Day",
+                    data: datasets[0], // y축 데이터
+                    borderColor: "rgba(0, 123, 255, 0.9)",
+                    borderWidth: "0",
+                    backgroundColor: "rgba(0, 123, 255, 0.5)",
+                    fontFamily: "Poppins"
+                    },
+                ]
+                },
+                options: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                    fontFamily: 'Poppins'
+                    }
+
+                },
+                scales: {
+                    xAxes: [{
+                    ticks: {
+                        fontFamily: "Poppins"
+
+                    }
+                    }],
+                    yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        fontFamily: "Poppins"
+                    }
+                    }]
+                }
+                }
+            });
+        }
+    }
+
+});
 </script>
+
 {% endblock %}

@@ -8,4 +8,5 @@ urlpatterns = [
     path('market/', MarketInfoView.as_view(), name='market'),
     path('search/<str:key>', SearchView.as_view(), name='search'),
     path('<str:pk>', StocksDetailView.as_view(), name='detail'),
+    path('<str:pk>/stats', StocksDetailView.as_view(), name="detail_stats"),
 ]

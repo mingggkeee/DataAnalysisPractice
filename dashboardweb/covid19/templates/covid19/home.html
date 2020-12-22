@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+    <!-- Title Page-->
+    <title>Covid19 Home</title>
+{% endblock page_title %}
+
+{% block main_content %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- DATA TABLE-->
+                                <div class="table-responsive m-b-40">
+                                    <table class="table table-borderless table-data3" id="confirmed_table">
+                                        <thead>
+                                            <tr>
+                                                <th>시도</th>
+                                                <th>확진</th>
+                                                <th>증감</th>
+                                                <th>사망</th>
+                                                <th>격리해제</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- END DATA TABLE-->
+                            </div>
+                        </div>
+
+                        {% include 'copyright.html' %}
+{% endblock main_content %}
+
+{% block custom_js %}
+<script type="text/javascript">
+$(function() {
+
+    var columns = ['gubun', 'defCnt', 'incDec', 'deathCnt', 'isolClearCnt']
+    $.ajax({
+        'url': '/covid19/confirmed',
+        'method': 'get',
+        'datatype': 'json', // 응답컨텐츠의 형식
+        'success': function(data, status, xhr){
+            for (var i = 0; i < data.length; i++) {
+                var tr = $('<tr></tr>'); // tr 태그 객체 만들기
+                for (var j = 0; j < columns.length; j++) {
+                    var td = $('<td></td>'); // td 태그 객체 만들기
+                    column = columns[j];
+                    if (column == 'incDec') {
+                        if (parseInt(data[i][column]) > 0){
+                            td.addClass('denied');
+                        }
+                        else {
+                            td.addClass('process');
+                        }
+                    }
+                    td.text(data[i][column]);
+                    tr.append(td);
+                }
+                $('#confirmed_table').append(tr)
+            }
+        },
+        'error': function(xhr, status, err){
+
+        }
+    });
+});
+</script>
+{% endblock %}
