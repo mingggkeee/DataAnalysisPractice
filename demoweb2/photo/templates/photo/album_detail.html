@@ -4,27 +4,28 @@
 
 {% block extra-style %}
 <style>
-thumbnail{
+.thumbnail {
     border: 5px solid #ccc;
 }
 </style>
 {% endblock %}
 
 {% block content %}
-    
+
     <div class="mt-5">
-        <span class = "h2">{{ object.name }}</span>&emsp;
-        <span class="font-italic h5">{{ object.description }}</span>
+        <span class="h2">{{ object.name }}&emsp;</span>
+        <span class="h5 font-italic">{{ object.description }}</span>
     </div>
 
-    <hr style="margin : 0 0 20px 0;">
+    <hr style="margin: 0 0 20px 0;"> 
 
-    <div class="row">
-        {% for photo in object.photo_set.all %}
-        <div class="col-md-3 mb-5">
+    <div class="row"> 
+
+        {% for photo in object.photo_set.all %} 
+        <div class="col-md-3 mb-5"> 
             <div class="thumbnail">
-                <a href="{{ photo.get_absolute.url }}">
-                    <img src="{{ photo.image.thumb_url }}" style="width:100%;">
+                <a href="{{ photo.get_absolute_url }}">
+                    <img src="{{ photo.image.thumb_url }}" style="width: 100%;">
                 </a>
             </div>
             <ul>
@@ -32,7 +33,9 @@ thumbnail{
                 <li class="font-italic">{{ photo.upload_dt|date:"Y-m-d" }}</li>
             </ul>
         </div>
-        {% endfor %}
+        {% endfor %} 
+
     </div>
 
 {% endblock %}
+

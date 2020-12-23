@@ -63,6 +63,7 @@
 $(function() {
 
     var columns = ['gubun', 'defCnt', 'incDec', 'deathCnt', 'isolClearCnt']
+
     $.ajax({
         'url': '/covid19/confirmed',
         'method': 'get',
@@ -97,7 +98,7 @@ $(function() {
             }
         },
         'error': function(xhr, status, err){
-
+            alert(err);
         }
     });
 
@@ -130,7 +131,7 @@ $(function() {
     var confirmed_line_chart = null;
     function show_region_chart(region, data) {
         
-        $('#confirmed_by_region_title').text(region);
+        $('#confirmed_by_region_title').text(region + '  확진자 수 증감');
 
         var labels = [];
         var dataset = [];

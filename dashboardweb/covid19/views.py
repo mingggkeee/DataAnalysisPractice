@@ -21,12 +21,14 @@ class ConfirmedStatView(View):
 
         response = requests.get(url + '?' + qs)
 
+        # 중요한 부분! 데이터를 어떻게 바꿀까?
         response_dict = xmltodict.parse(response.content)   # xml -> orderddict
         response_json = json.dumps(response_dict, ensure_ascii=False)   # oredreddict -> json-string
         response_dict2 = json.loads(response_json) # json-string -> general dict
         item_list = response_dict2['response']['body']['items']['item']
         item_list_json = json.dumps(item_list, ensure_ascii=False)
-
+        # 중요부분
+        
         return HttpResponse(item_list_json, content_type='application/json;charset=utf-8')
 
 class ConfirmedRegionView(View):

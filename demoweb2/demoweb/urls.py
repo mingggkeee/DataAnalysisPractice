@@ -31,5 +31,6 @@ urlpatterns = [
     # path('bookmark/', None, name="bookmark-index")
     path('bookmark/', include('bookmark.urls')),    # bookmark로 시작되는 url 설정 관리는 bookmark/urls.py 에서 처리합니다.
     path('blog/', include('blog.urls')),            # blog로 시작되는 url 설정 관리는 blog/urls.py 에서 처리합니다.
-    path('photo/', include('photo.urls')),
-] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+    path('photo/', include('photo.urls')),          # photo로 시작되는 url 설정 관리는 photo/urls.py 에서 처리합니다.
+    
+] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT) # 이 요청과 경로에 대해서 static 처리하는 설정 -> View를 거치지 않고 직접 다운로드하는 방식으로 처리
