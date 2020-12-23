@@ -12,22 +12,38 @@ class HomeView(TemplateView):
     template_name = 'stocks/home.html'
 
 class MarketInfoView(View):
-    def get(self, request): # view에서 상속 받은 메서드 -> 재정의, 브라우저에서 get 요청을 보내면 호출되는 메서드
-        # return HttpResponse("Hello, there", content_type='text/plain;charset=utf-8')   # HTML을 응답하는 객체 반환
+    def get(self, request):
         import FinanceDataReader as fdr
-        kospi = fdr.DataReader("KS11", '20201221')
-        close_value1 = str(kospi.values[0][0])
+        from datetime import datetime, timedelta
+        import json
 
-        kosdaq = fdr.DataReader("KQ11", '20201221')
-        close_value2 = str(kosdaq.values[0][0])
+        today = datetime.today() - timedelta(days=10)
+        today_str = today.strftime("%Y-%m-%d")
 
-        dowjones = fdr.DataReader("DJI", '20201221')
-        close_value3 = str(dowjones.values[0][0])
+        info = {}
+        df = fdr.DataReader('KS11', today_str)
+        df = df.tail(5).reset_index()
+        df['Date'] = df['Date'].astype('string')
+        info['kospi'] = [ list(row[:5]) for row in df.values ]
 
-        nasdaq = fdr.DataReader("IXIC", '20201221')
-        close_value4 = str(nasdaq.values[0][0])
+        df = fdr.DataReader('KQ11', today_str)
+        df = df.tail(5).reset_index()
+        df['Date'] = df['Date'].astype('string')
+        info['kosdaq'] = [ list(row[:5]) for row in df.values ]
 
-        return HttpResponse("{0},{1},{2},{3}".format(close_value1, close_value2, close_value3, close_value4), content_type='text/plain;charset=utf-8')   # HTML을 응답하는 객체 반환
+        df = fdr.DataReader('DJI', today_str)
+        df = df.tail(5).reset_index()
+        df['Date'] = df['Date'].astype('string')
+        info['dowjones']  = [ list(row[:5]) for row in df.values ]
+
+        df = fdr.DataReader('IXIC', today_str)
+        df = df.tail(5).reset_index()
+        df['Date'] = df['Date'].astype('string')
+        info['nasdaq']  = [ list(row[:5]) for row in df.values ]
+
+        info_json = json.dumps(info, ensure_ascii=False)
+
+        return HttpResponse(info_json, content_type="application/json")
 
 class SearchView(View):
 
